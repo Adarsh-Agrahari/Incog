@@ -37,6 +37,10 @@ export async function GET(request: Request){
             messages: user[0].messages
         }, {status:200})
     } catch (error) {
-
+        console.log("An unexpected error occured", error)
+        return Response.json({
+            success: false,
+            message: "Not Authenticated"
+        }, {status:500})    
     }
 }
