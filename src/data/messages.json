@@ -1,0 +1,27 @@
+[
+  {
+    "title": "Welcome",
+    "content": "Hello and welcome to our platform!",
+    "received": "1 day ago"
+  },
+  {
+    "title": "Update",
+    "content": "Our latest update includes several new features.",
+    "received": "2 days ago"
+  },
+  {
+    "title": "Reminder",
+    "content": "Don't forget to check out the new tutorial section.",
+    "received": "3 hours ago"
+  },
+  {
+    "title": "Offer",
+    "content": "Get 20% off on your next purchase with code SAVE20.",
+    "received": "5 hours ago"
+  },
+  {
+    "title": "Thank You",
+    "content": "Thank you for being a valued member of our community.",
+    "received": "7 minutes ago"
+  }
+]
