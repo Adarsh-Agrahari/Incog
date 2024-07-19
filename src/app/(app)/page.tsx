@@ -15,8 +15,8 @@ const Home = () => {
     <>
       <main className="flex-grow flex flex-col items-center justify-center px-4 md:px-24 py-12">
         <section className="text-center mb-8 md:mb-12">
-          <h1>Dive into the world of Anonumous Conversations</h1>
-          <p>Explore Incog - where you identity remains a secret</p>
+          <h1>Dive into the world of Anonymous Conversations</h1>
+          <p>Explore Incog - where your identity remains a secret</p>
         </section>
         <Carousel
           plugins={[Autoplay({ delay: 2000 })]}
