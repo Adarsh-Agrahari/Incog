@@ -1,183 +1,135 @@
-'use client'
+'use client';
 
-import { useState, useEffect, useCallback } from 'react'
-import { useSession } from 'next-auth/react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import axios, { AxiosError } from 'axios'
-import { Loader2, RefreshCcw } from 'lucide-react'
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useParams } from 'next/navigation'; // Import useParams
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast'; // Import useToast
 
-import MessageCard from '@/components/MessageCard'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import { Switch } from '@/components/ui/switch'
-import { useToast } from '@/components/ui/use-toast'
-import { Message } from '@/model/User'
-import { acceptMessageSchema } from '@/schemas/acceptMessageSchema'
-import { ApiResponse } from '@/types/ApiResponse'
-
-const Page = () => {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSwitchLoading, setIsSwitchLoading] = useState(false)
-  const [profileUrl, setProfileUrl] = useState('')
-
-  const { toast } = useToast()
-  const { data: session } = useSession()
-
-  const form = useForm({
-    resolver: zodResolver(acceptMessageSchema)
-  })
-
-  const { register, watch, setValue } = form
-  const acceptMessages = watch('acceptMessages')
-
-  const handleDeleteMessage = (messageId: string) => {
-    setMessages(messages.filter((message) => message._id !== messageId))
-  }
-
-  const fetchAcceptMessage = useCallback(async () => {
-    setIsSwitchLoading(true)
-    try {
-      const response = await axios.get<ApiResponse>('/api/accept-messages')
-      setValue('acceptMessages', response.data.isAcceptingMessages)
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>
-      toast({
-        title: "Error",
-        description: axiosError.response?.data.message || "Failed to fetch message settings",
-        variant: "destructive"
-      })
-    } finally {
-      setIsSwitchLoading(false)
-    }
-  }, [setValue, toast])
-
-  const fetchMessages = useCallback(async (refresh: boolean = false) => {
-    setIsLoading(true)
-    setIsSwitchLoading(false)
-    try {
-      const response = await axios.get<ApiResponse>('/api/get-messages')
-      setMessages(response.data.messages || [])
-      if (refresh) {
-        toast({
-          title: "Refreshed Messages",
-          description: "Showing latest messages"
-        })
-      }
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>
-      toast({
-        title: "Error",
-        description: axiosError.response?.data.message || "Failed to fetch messages",
-        variant: "destructive"
-      })
-    } finally {
-      setIsLoading(false)
-      setIsSwitchLoading(false)
-    }
-  }, [toast])
-
-  useEffect(() => {
-    if (!session || !session.user) return
-    fetchMessages()
-    fetchAcceptMessage()
-
-    const username = session.user.username
-    const baseUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : ''
-    setProfileUrl(`${baseUrl}/u/${username}`)
-  }, [session, fetchAcceptMessage, fetchMessages])
-
-  const handleSwitchChange = async () => {
-    try {
-      const response = await axios.post<ApiResponse>('/api/accept-messages', {
-        acceptMessages: !acceptMessages
-      })
-      setValue('acceptMessages', !acceptMessages)
-      toast({
-        title: response.data.message,
-        variant: 'default'
-      })
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>
-      toast({
-        title: "Error",
-        description: axiosError.response?.data.message || "Failed to update message settings",
-        variant: "destructive"
-      })
-    }
-  }
-
-  const copyToClipboard = () => {
-    if (typeof navigator !== 'undefined') {
-      navigator.clipboard.writeText(profileUrl)
-      toast({
-        title: "URL copied",
-        description: "Profile URL has been copied to clipboard"
-      })
-    }
-  }
-
-  if (!session || !session.user) {
-    return <div>Please login</div>
-  }
-
-  return (
-    <div className='my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl'>
-      <h1 className='text-4xl font-bold mb-4'>User Dashboard</h1>
-      <div className='mb-4'>
-        <h2 className='text-lg font-semibold mb-2'>Copy Your Unique Link</h2>
-        <div className='flex items-center'>
-          <input 
-            type="text"
-            value={profileUrl}
-            disabled
-            className='input input-bordered w-full p-2 mr-2'
-          />
-          <Button onClick={copyToClipboard}>Copy</Button>
-        </div>
-      </div>
-      <div className='mb-4'>
-        <Switch
-          {...register('acceptMessages')}
-          checked={acceptMessages}
-          onCheckedChange={handleSwitchChange}
-          disabled={isSwitchLoading}
-        />
-        <span className='ml-2'>
-          Accept Message: {acceptMessages ? 'On' : 'Off'}
-        </span>
-      </div>
-      <Separator />
-      <Button 
-        className='mt-4'
-        variant='outline'
-        onClick={(e) => {
-          e.preventDefault()
-          fetchMessages(true)
-        }}
-      >
-        {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <RefreshCcw className='h-4 w-4' />
-        )}
-      </Button>
-      <div className='mt-4 grid grid-cols-1 md:grid-cols-2 gap-6'>
-        {messages.length > 0 ? (
-          messages.map((message) => (
-            <MessageCard 
-              key={message._id} 
-              message={message}
-              onMessageDelete={handleDeleteMessage}
-            />
-          ))
-        ) : (
-          <p>No messages to display.</p>
-        )}
-      </div>
-    </div>
-  )
+interface ApiResponse {
+  success: boolean;
+  code: string;
+  message?: string;
 }
 
-export default Page
+const PublicProfileLink: React.FC = () => {
+  const [content, setMessage] = useState<string>('');
+  const [suggestedMessages, setSuggestedMessages] = useState<string[]>([]);
+  const params = useParams(); // Use useParams to get route parameters
+  const username = params.username; // Extract username from params
+
+  const { toast } = useToast(); // Initialize useToast
+
+  const fetchSuggestedMessages = async () => {
+    try {
+      const response = await axios.post<ApiResponse>('/api/suggest-messages');
+      console.log('Fetched suggested messages response:', response.data);
+
+      if (response.data.success) {
+        setSuggestedMessages(response.data.code.split(' || '));
+        toast({
+          title: "Success",
+          description: "Suggested messages fetched successfully.",
+          variant: "default"
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: response.data.message || "Failed to fetch suggested messages.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching suggested messages:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred while fetching suggested messages.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!username) {
+      toast({
+        title: "Error",
+        description: "Username is not defined.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post<ApiResponse>('/api/send-message', { username, content });
+      if (response.data.success) {
+        toast({
+          title: "Message Sent",
+          description: "Your message was sent successfully.",
+          variant: "default"
+        });
+        setMessage(''); // Clear message input after sending
+      } else {
+        toast({
+          title: "Error",
+          description: response.data.message || "Failed to send message.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred while sending your message.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  return (
+    <div className="my-4 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
+      <h1 className='text-4xl font-bold mb-4'>Public Profile Link</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle>Send Anonymous Message to @{username}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4">
+            <Input 
+              type="text"
+              placeholder="Write your anonymous message here"
+              value={content}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+          </div>
+          <Button onClick={handleSendMessage}>Send It</Button>
+
+          <div className="mt-6">
+            <Button variant="secondary" onClick={fetchSuggestedMessages}>Suggest Messages</Button>
+          </div>
+          
+          <div className="mt-4">
+            <p>Click on any message below to select it.</p>
+            <div className="mt-2">
+              {suggestedMessages.map((msg, index) => (
+                <div
+                  key={index}
+                  className="p-2 mt-2 bg-gray-100 rounded cursor-pointer"
+                  onClick={() => setMessage(msg)}
+                >
+                  {msg}
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      <div className="mt-6 text-center">
+        <Button>Create Your Account</Button>
+      </div>
+    </div>
+  );
+};
+
+export default PublicProfileLink;
