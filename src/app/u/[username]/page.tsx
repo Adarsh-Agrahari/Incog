@@ -17,7 +17,7 @@ const PublicProfileLink: React.FC = () => {
 
   const fetchSuggestedMessages = async () => {
     try {
-      const response = await axios.post<ApiResponse>('http://localhost:3000/api/suggest-messages');
+      const response = await axios.post<ApiResponse>('/api/suggest-messages');
       console.log('Fetched suggested messages response:', response.data);
       if (response.data.success) {
         setSuggestedMessages(response.data.code.split(' || '));
