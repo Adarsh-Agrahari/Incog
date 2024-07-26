@@ -1,3 +1,4 @@
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { z } from "zod";
@@ -7,15 +8,14 @@ const UsernameQuerySchema = z.object({
     username: usernameValidation
 });
 
-export async function GET(request: Request){
+export async function GET(request: NextRequest) {
     await dbConnect();
     
     try {
-        const { searchParams } = new URL(request.url);
-        const username = searchParams.get('username');
+        const username = request.nextUrl.searchParams.get('username');
 
         if (!username) {
-            return Response.json({
+            return NextResponse.json({
                 success: false,
                 message: 'Username parameter is missing'
             }, { status: 400 });
@@ -24,7 +24,7 @@ export async function GET(request: Request){
         const result = UsernameQuerySchema.safeParse({ username });
         if (!result.success) {
             const usernameErrors = result.error.format().username?._errors || [];
-            return Response.json({
+            return NextResponse.json({
                 success: false,
                 message: usernameErrors?.length > 0 ? usernameErrors.join(', ') : 'Invalid query parameters'
             }, { status: 400 });
@@ -38,20 +38,20 @@ export async function GET(request: Request){
         });
 
         if (existingVerifiedUser) {
-            return Response.json({
+            return NextResponse.json({
                 success: false,
                 message: 'Username is already taken'
             }, { status: 400 });
         }
 
-        return Response.json({
+        return NextResponse.json({
             success: true,
             message: 'Username is unique',
         }, { status: 200 });
 
     } catch (error) {
         console.error("Error checking username", error);
-        return Response.json({
+        return NextResponse.json({
             success: false,
             message: "An error occurred while checking the username"
         }, { status: 500 });

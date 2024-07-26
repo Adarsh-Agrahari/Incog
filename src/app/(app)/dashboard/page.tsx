@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -24,7 +23,6 @@ const Page = () => {
   const [profileUrl, setProfileUrl] = useState('')
 
   const { toast } = useToast()
-  const router = useRouter()
   const { data: session } = useSession()
 
   const form = useForm({
@@ -88,7 +86,7 @@ const Page = () => {
     const username = session.user.username
     const baseUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : ''
     setProfileUrl(`${baseUrl}/u/${username}`)
-  }, [session, fetchAcceptMessage, fetchMessages, router.basePath])
+  }, [session, fetchAcceptMessage, fetchMessages])
 
   const handleSwitchChange = async () => {
     try {
