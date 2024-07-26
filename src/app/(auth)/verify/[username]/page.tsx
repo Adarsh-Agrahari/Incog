@@ -14,6 +14,7 @@ import { verifySchema } from "@/schemas/verifySchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -37,7 +38,7 @@ const VerifyAccount = () => { // Changed function name to start with uppercase
         title: "Success",
         description: response.data.message,
       });
-      router.replace("sign-in");
+      router.replace("/sign-in");
     } catch (error) {
       console.log("Error in signup of user", error);
       const axiosError = error as AxiosError<ApiResponse>;
@@ -68,15 +69,26 @@ const VerifyAccount = () => { // Changed function name to start with uppercase
                 <FormItem>
                   <FormLabel>Verification Code</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter verification code" {...field} />
+                    <Input
+                      placeholder="Enter verification code"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Verify Account</Button>
           </form>
         </Form>
+        <div className="text-center mt-4">
+          <p>
+            Already verified?{" "}
+            <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
