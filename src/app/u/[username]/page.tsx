@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import { useParams } from 'next/navigation'; // Import useParams
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -12,8 +13,10 @@ interface ApiResponse {
 }
 
 const PublicProfileLink: React.FC = () => {
-  const [message, setMessage] = useState<string>('');
+  const [content, setMessage] = useState<string>('');
   const [suggestedMessages, setSuggestedMessages] = useState<string[]>([]);
+  const params = useParams(); // Use useParams to get route parameters
+  const username = params.username; // Extract username from params
 
   const fetchSuggestedMessages = async () => {
     try {
@@ -27,15 +30,16 @@ const PublicProfileLink: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchSuggestedMessages();
-  }, []);
-
   const handleSendMessage = async () => {
+    if (!username) {
+      console.error('Username is not defined.');
+      return;
+    }
+
     try {
-      const response = await axios.post('/api/send-message', { message });
+      const response = await axios.post(`/api/send-message`, { username, content });
       if (response.data.success) {
-        console.log('Message sent successfully:', message);
+        console.log('Message sent successfully:', content);
         setMessage(''); // Clear message input after sending
       } else {
         console.error('Failed to send message:', response.data.message);
@@ -50,17 +54,14 @@ const PublicProfileLink: React.FC = () => {
       <h1 className='text-4xl font-bold mb-4'>Public Profile Link</h1>
       <Card>
         <CardHeader>
-          <CardTitle>Send Anonymous Message to @hc</CardTitle>
+          <CardTitle>Send Anonymous Message to @{username}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-             
-            </label>
             <Input 
               type="text"
               placeholder="Write your anonymous message here"
-              value={message}
+              value={content}
               onChange={(e) => setMessage(e.target.value)}
             />
           </div>
