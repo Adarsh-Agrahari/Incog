@@ -1,12 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-const page = () => {
+const Page = () => { // Changed function name to start with uppercase
   const { toast } = useToast();
   const router = useRouter();
 
@@ -37,7 +37,7 @@ const page = () => {
       password: data.password,
     });
     if (result?.error) {
-      if (result.error == "CredentialsSignin") {
+      if (result.error === "CredentialsSignin") {
         toast({
           title: "Login Failed",
           description: "Incorrect username or password",
@@ -45,10 +45,10 @@ const page = () => {
         });
       } else {
         toast({
-            title: "Error",
-            description: result.error,
-            variant: "destructive",
-          });
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        });
       }
     }
     if (result?.url) {
@@ -59,7 +59,7 @@ const page = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <div className="test-center">
+        <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
             Join Incog :)
           </h1>
@@ -98,7 +98,7 @@ const page = () => {
               )}
             />
             <Button type="submit">
-              Signin
+              Sign In
             </Button>
           </form>
         </Form>
@@ -115,4 +115,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page; // Changed function name to match the component name

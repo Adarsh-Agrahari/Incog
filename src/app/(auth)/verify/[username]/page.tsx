@@ -19,7 +19,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-const verifyAccount = () => {
+const VerifyAccount = () => { // Changed function name to start with uppercase
   const router = useRouter();
   const params = useParams<{ username: string }>();
   const { toast } = useToast();
@@ -53,7 +53,7 @@ const verifyAccount = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <div className="test-center">
+        <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
             Verify Your Account
           </h1>
@@ -82,4 +82,4 @@ const verifyAccount = () => {
   );
 };
 
-export default verifyAccount;
+export default VerifyAccount; // Changed function name to match the component name

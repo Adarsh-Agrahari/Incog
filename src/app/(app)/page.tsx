@@ -9,8 +9,54 @@ import {
 } from "@/components/ui/carousel";
 import messages from "@/data/messages.json";
 import Autoplay from "embla-carousel-autoplay";
+import { useState, useEffect, useCallback } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { signIn, useSession } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signInSchema } from "@/schemas/signInSchema";
 
-const Home = () => {
+const Page = () => { // Changed function name to start with uppercase
+  const { toast } = useToast();
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const form = useForm({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      identifier: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+    const result = await signIn("credentials", {
+      redirect: false,
+      identifier: data.identifier,
+      password: data.password,
+    });
+    if (result?.error) {
+      if (result.error === "CredentialsSignin") {
+        toast({
+          title: "Login Failed",
+          description: "Incorrect username or password",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        });
+      }
+    }
+    if (result?.url) {
+      router.replace("/dashboard");
+    }
+  };
+
   return (
     <>
       <main className="flex-grow flex flex-col items-center justify-center px-4 md:px-24 py-12">
@@ -49,4 +95,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Page; // Changed function name to match the component name
