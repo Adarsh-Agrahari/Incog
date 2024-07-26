@@ -26,10 +26,11 @@ const PublicProfileLink: React.FC = () => {
     try {
       const response = await axios.post<ApiResponse>('/api/suggest-messages');
       console.log('Fetched suggested messages response:', response.data);
+
       if (response.data.success) {
         setSuggestedMessages(response.data.code.split(' || '));
         toast({
-          title: "Suggested Messages",
+          title: "Success",
           description: "Suggested messages fetched successfully.",
           variant: "default"
         });
@@ -70,11 +71,19 @@ const PublicProfileLink: React.FC = () => {
         });
         setMessage(''); // Clear message input after sending
       } else {
-        toast({
-          title: "Error",
-          description: response.data.message || "Failed to send message.",
-          variant: "destructive"
-        });
+        if (response.data.message === "User is not accepting the messages") {
+          toast({
+            title: "User Not Accepting Messages",
+            description: response.data.message,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: response.data.message || "Failed to send message.",
+            variant: "destructive"
+          });
+        }
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -124,9 +133,6 @@ const PublicProfileLink: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-      <div className="mt-6 text-center">
-        <Button>Create Your Account</Button>
-      </div>
     </div>
   );
 };
