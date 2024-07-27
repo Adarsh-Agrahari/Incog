@@ -69,7 +69,7 @@ const PublicProfileLink: React.FC = () => {
           description: "Your message was sent successfully.",
           variant: "default"
         });
-        setMessage(''); // Clear message input after sending
+        setMessage(''); 
       } else {
         if (response.data.message === "User is not accepting the messages") {
           toast({

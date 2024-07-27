@@ -5,9 +5,8 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,45 +16,57 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
 import { Button } from "./ui/button";
 import { X } from "lucide-react";
 import { Message } from "@/model/User";
 import { useToast } from "./ui/use-toast";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
 
 type MessageCardProps = {
   message: Message;
-  onMessageDelete: (messageId: string) => void
-}
+  onMessageDelete: (messageId: string) => void;
+};
 
-const MessageCard = ({message, onMessageDelete}: MessageCardProps) => {
-  const {toast} = useToast()
+const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
+  const { toast } = useToast();
+
   const handleDeleteConfirm = async () => {
-    const response = await axios.delete<ApiResponse>(`/api/delete-message/${message._id}`)
-    toast({
-      title: response.data.message
-    })
-    onMessageDelete(message._id)
-  }
+    try {
+      const response = await axios.delete<ApiResponse>(`/api/delete-message/${message._id}`);
+      toast({
+        title: "Success",
+        description: response.data.message,
+        variant: "default"
+      });
+      onMessageDelete(message._id);
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>;
+      toast({
+        title: "Error",
+        description: axiosError.response?.data.message || "Failed to delete message",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
-    <Card>
+    <Card className="p-0">
       <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <AlertDialog>
+        <CardTitle>{message.content || "Message Title"}</CardTitle>
+        <AlertDialog >
           <AlertDialogTrigger asChild>
             <Button variant="destructive">
-              <X className="w-5 h-5"/>
+              <X className="w-5 h-5" />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
+                This action cannot be undone. This will permanently delete this message.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -64,9 +75,7 @@ const MessageCard = ({message, onMessageDelete}: MessageCardProps) => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <CardDescription>Card Description</CardDescription>
       </CardHeader>
-      <CardContent></CardContent>
     </Card>
   );
 };
