@@ -1,4 +1,4 @@
-import { resend } from "@/lib/resend";
+import emailjs from "@emailjs/browser";
 import VerificationEmail from "../../emails/VerificationEmails";
 import { ApiResponse } from "@/types/ApiResponse";
 
@@ -8,12 +8,21 @@ export async function sendVerificationEmail(
     verifyCode: string
 ): Promise<ApiResponse>{
     try {
-        await resend.emails.send({
-            from: 'onboarding@resend.dev',
-            to: email,
-            subject: 'Incog | Verification code',
-            react: VerificationEmail({username, otp: verifyCode}),
-        });
+        await emailjs
+        .send(
+          // EMAILJS_SERVICE_ID,
+          "",
+          // EMAILJS_TEMPLATE_ID,
+          "",
+          {
+            // Add other variables that used in email js
+            to_name: "Rishab",
+            to_email: email,
+            message: VerificationEmail({username, otp: verifyCode}),
+          },
+          // EMAILJS_PUBLIC_KEY
+          ""
+        )
         return {success: true, message: "Verification email send successfully"}
     } catch (emailError) {
         console.error("Error sending verification email", emailError)
