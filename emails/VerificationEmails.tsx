@@ -1,28 +1,17 @@
-import { Html, Head, Preview, Heading, Row, Section, Text, Button } from "@react-email/components";
-
-interface VerificationEmailProps {
-  username: string;
-  otp: string;
-}
-
-export default function VerificationEmail({ username, otp }: VerificationEmailProps) {
-  return (
+// emails/VerificationEmails.ts
+const VerificationEmail = ({ username, otp }: { username: string; otp: string }): string => `
     <Html lang="en" dir="ltr">
       <Head>
         <title>Verification Code</title>
       </Head>
-      <Preview>Here's your verification code: {otp}</Preview>
       <Section>
         <Row>
-          <Heading as="h2">Hello {username},</Heading>
+          <Heading as="h2">Hello ${username},</Heading>
         </Row>
         <Row>
-          <Text>
-            Thank you for registering. Please use the following verification code to complete your registration:
-          </Text>
-        </Row>
-        <Row>
-          <Text>{otp}</Text>
+          <p>Thank you for registering.</p> 
+          <p>Your verification code is: <strong>${otp}</strong></p>
+          <p>Please use this code to verify your email address.</p>
         </Row>
         <Row>
           <Text>
@@ -30,15 +19,9 @@ export default function VerificationEmail({ username, otp }: VerificationEmailPr
           </Text>
         </Row>
         <Row>
-          <Button 
-            href={`http://localhost:3000/verify/${username}`}
-            style={{ color: '#61dafb' }}
-            type="button"
-          >
-            Verify here
-          </Button>
         </Row>
       </Section>
     </Html>
-  );
-}
+`;
+
+export default VerificationEmail;

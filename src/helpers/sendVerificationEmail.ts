@@ -1,4 +1,4 @@
-import emailjs from "@emailjs/browser";
+import transporter from "@/lib/nodemailer";
 import VerificationEmail from "../../emails/VerificationEmails";
 import { ApiResponse } from "@/types/ApiResponse";
 
@@ -6,26 +6,20 @@ export async function sendVerificationEmail(
     email: string,
     username: string,
     verifyCode: string
-): Promise<ApiResponse>{
+): Promise<ApiResponse> {
     try {
-        await emailjs
-        .send(
-          // EMAILJS_SERVICE_ID,
-          "",
-          // EMAILJS_TEMPLATE_ID,
-          "",
-          {
-            // Add other variables that used in email js
-            to_name: "Rishab",
-            to_email: email,
-            message: VerificationEmail({username, otp: verifyCode}),
-          },
-          // EMAILJS_PUBLIC_KEY
-          ""
-        )
-        return {success: true, message: "Verification email send successfully"}
+        const mailOptions = {
+            from: process.env.EMAIL_USER as string,  // Ensure this is a string
+            to: email,                              // List of recipients
+            subject: 'Verify Your Email',           // Subject line
+            html: VerificationEmail({ username, otp: verifyCode }), // HTML body content
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        return { success: true, message: "Verification email sent successfully" };
     } catch (emailError) {
-        console.error("Error sending verification email", emailError)
-        return {success: false, message: "Failed to send verification email"}
+        console.error("Error sending verification email", emailError);
+        return { success: false, message: "Failed to send verification email" };
     }
 }
