@@ -1,5 +1,5 @@
 import transporter from "@/lib/nodemailer";
-import VerificationEmail from "../../emails/VerificationEmails";
+import VerificationEmail from "../emails/VerificationEmails";
 import { ApiResponse } from "@/types/ApiResponse";
 
 export async function sendVerificationEmail(
