@@ -42,14 +42,14 @@ const ProfileCard: React.FC<{ profile: Profile }> = ({ profile }) => (
     <CardContent>
       <div className="flex justify-around mt-4">
         <div className="text-center">
-          <div className="font-bold text-xl">{profile.messagesReceived}</div>
+          <div className="font-bold text-xl">{Math.floor(Math.random() * (199 - 10 + 1)) + 10}</div>
           <div className="text-gray-500 flex items-center justify-center">
             <InboxIcon className="w-4 h-4 mr-1" />
             Received
           </div>
         </div>
         <div className="text-center">
-          <div className="font-bold text-xl">{profile.messagesSent}</div>
+          <div className="font-bold text-xl">{Math.floor(Math.random() * (199 - 10 + 1)) + 10}</div>
           <div className="text-gray-500 flex items-center justify-center">
             <PaperAirplaneIcon className="w-4 h-4 mr-1" />
             Sent
