@@ -1,15 +1,15 @@
 "use client"
-
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ProfileCard from "@/components/ProfileCard"
+import axios from "axios"
 
 interface Profile {
   id: number;
-  name: string;
+  username: string;
   title: string;
   avatar: string;
   email: string;
@@ -19,24 +19,37 @@ interface Profile {
   link: string;
 }
 
+interface ApiResponse {
+  success: Boolean,
+  profiles: Profile[]
+}
+
 // Mock data for profiles
-const profiles: Profile[] = [
-  { id: 1, name: "Alice Johnson", title: "Software Engineer", avatar: "/avatars/alice.jpg", email: "alice@example.com", messagesReceived: 50, messagesSent: 30, isVerified: true, link: "/u/alice" },
-  { id: 2, name: "Bob Smith", title: "Product Manager", avatar: "/avatars/bob.jpg", email: "bob@example.com", messagesReceived: 40, messagesSent: 20, isVerified: false, link: "/u/bob" },
-  { id: 3, name: "Carol Williams", title: "UX Designer", avatar: "/avatars/carol.jpg", email: "carol@example.com", messagesReceived: 30, messagesSent: 25, isVerified: true, link: "/u/carol" },
-  { id: 4, name: "David Brown", title: "Data Scientist", avatar: "/avatars/david.jpg", email: "david@example.com", messagesReceived: 60, messagesSent: 35, isVerified: true, link: "/u/david" },
-  { id: 5, name: "Emma Davis", title: "Front-End Developer", avatar: "/avatars/emma.jpg", email: "emma@example.com", messagesReceived: 45, messagesSent: 28, isVerified: false, link: "/u/emma" },
-  // Add more profiles as needed
-]
+// const profiles: Profile[] = [
+//   { id: 1, name: "Alice Johnson", title: "Software Engineer", avatar: "/avatars/alice.jpg", email: "alice@example.com", messagesReceived: 50, messagesSent: 30, isVerified: true, link: "/u/alice" },
+//   { id: 2, name: "Bob Smith", title: "Product Manager", avatar: "/avatars/bob.jpg", email: "bob@example.com", messagesReceived: 40, messagesSent: 20, isVerified: false, link: "/u/bob" },
+//   { id: 3, name: "Carol Williams", title: "UX Designer", avatar: "/avatars/carol.jpg", email: "carol@example.com", messagesReceived: 30, messagesSent: 25, isVerified: true, link: "/u/carol" },
+//   { id: 4, name: "David Brown", title: "Data Scientist", avatar: "/avatars/david.jpg", email: "david@example.com", messagesReceived: 60, messagesSent: 35, isVerified: true, link: "/u/david" },
+//   { id: 5, name: "Emma Davis", title: "Front-End Developer", avatar: "/avatars/emma.jpg", email: "emma@example.com", messagesReceived: 45, messagesSent: 28, isVerified: false, link: "/u/emma" },
+//   // Add more profiles as needed
+// ]
 
 const ExplorePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [filter, setFilter] = useState<string>("all")
-
-  const filteredProfiles = profiles.filter(profile =>
-    profile.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const filteredProfiles = profiles?.filter(profile =>
+    profile.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
     (filter === "all" || profile.title.toLowerCase().includes(filter))
   )
+
+  useEffect(()=>{
+    async function getProfile() {
+      const response = await axios.get<ApiResponse>('/api/profile');
+      setProfiles(response.data.profiles)
+    }
+    getProfile();
+  },[]);
 
   return (
     <div className="container mx-auto py-10">
@@ -51,15 +64,7 @@ const ExplorePage: React.FC = () => {
 
         <TabsContent value="history">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {profiles.slice(0, 3).map(profile => (
-              <ProfileCard key={profile.id} profile={profile} />
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="recommended">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {profiles.slice(2, 5).map(profile => (
+            {profiles.map(profile => (
               <ProfileCard key={profile.id} profile={profile} />
             ))}
           </div>
