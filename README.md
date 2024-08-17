@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Incog
 
-## Getting Started
+Incog is an anonymous messaging web application built with Next.js, MongoDB, and TypeScript. It features OTP verification using Nodemailer and robust input validation with Zod. AI-driven features powered by Gemini include message suggestions, a user recommendation system, and content filtering to enhance the user experience.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Anonymous Messaging:** Users can send and receive anonymous messages while maintaining privacy.
+- **OTP Verification:** Secure sign-up and login processes using Nodemailer for OTP verification.
+- **AI-Driven Enhancements:** Message suggestion, user recommendations, and content filtering powered by Gemini.
+- **Robust Input Validation:** Ensures data integrity and security with Zod validation.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend:** Next.js, Tailwind CSS, TypeScript
+- **Backend:** Next.js API routes
+- **Database:** MongoDB
+- **Email Verification:** Nodemailer
+- **AI Integration:** Gemini API
+- **Validation:** Zod
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Installation
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+- Node.js and npm installed
+- MongoDB instance running
+- Gemini API key
+- Nodemailer configuration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Steps
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. **Clone the repository:**
+    ```bash
+    git clone https://github.com/Adarsh-Agrahari/Incog.git
+    cd incog
+    ```
 
-## Deploy on Vercel
+2. **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Set up environment variables:**
+    Create a `.env.local` file in the root directory with the following content:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+    ```env
+    MONGO_URI=your_mongodb_connection_string
+    GEMINI_API_KEY=your_gemini_api_key
+    NODEMAILER_USER=your_nodemailer_email
+    NODEMAILER_PASS=your_nodemailer_password
+    ```
+
+4. **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+
+5. **Access the application:**
+    Open your browser and navigate to `http://localhost:3000`.
+
+## Usage
+
+- **Anonymous Messaging:** Users can send and receive anonymous messages.
+- **Sign Up / Login:** Users can sign up and log in using OTP verification.
+- **Message Suggestions:** AI-driven message suggestions to enhance communication.
+- **User Recommendations:** Personalized user recommendations based on interaction history.
+- **Content Filtering:** Filtering out inappropriate or irrelevant content using Gemini.
+
+## Contributing
+
+1. Fork the repository.
+2. Create your feature branch: `git checkout -b feature/your-feature-name`.
+3. Commit your changes: `git commit -m 'Add some feature'`.
+4. Push to the branch: `git push origin feature/your-feature-name`.
+5. Open a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+If you have any questions or feedback, feel free to reach out via email at adarshagrahari0503@gmail.com
+
+## Links
+
+- **GitHub Repository:** [Incog Repo](https://github.com/Adarsh-Agrahari/Incog)
+- **Live Site:** [Incog](https://incog-msg.vercel.app/)
+
