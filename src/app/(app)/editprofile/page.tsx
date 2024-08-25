@@ -15,7 +15,7 @@ import Link from "next/link"
 const SettingsPage: React.FC = () => {
   const { data: session } = useSession()
 
-  const [username, setUsername] = useState(session?.user?.name || "")
+  const [username, setUsername] = useState(session?.user?.username || "")
   const [email, setEmail] = useState(session?.user?.email || "")
   const [notifications, setNotifications] = useState(true)
 
