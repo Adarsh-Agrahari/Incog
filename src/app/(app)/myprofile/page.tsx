@@ -25,7 +25,7 @@ const MyProfilePage: React.FC = () => {
 
   // In a real application, you would fetch this data from your API
   const profileData: ProfileData = {
-    username: session?.user?.name || "User",
+    username: session?.user?.username || "User",
     email: session?.user?.email || "user@example.com",
     avatar: session?.user?.image || "/default-avatar.png",
     isVerified: true, // This should come from your backend
