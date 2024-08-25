@@ -32,7 +32,7 @@ const Navbar = () => {
         </Link>
         <div className="flex items-center space-x-4">
           <Link href="/explore">
-            <Button variant="secondary" className="hidden md:inline-flex">
+            <Button variant="secondary" className="inline-flex">
               Explore
             </Button>
           </Link>
