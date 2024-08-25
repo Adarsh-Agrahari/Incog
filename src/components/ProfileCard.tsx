@@ -26,7 +26,7 @@ const ProfileCard: React.FC<{ profile: Profile }> = ({ profile }) => (
         <AvatarImage src={profile.avatar} alt={profile.username} />
         <AvatarFallback>{profile.username[0].toUpperCase()}</AvatarFallback>
       </Avatar>
-      <div>
+      <div className="overflow-hidden">
         <CardTitle className="text-2xl flex items-center">
           {profile.username}
           {profile.isVerified && (
